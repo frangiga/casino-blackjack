@@ -28,11 +28,11 @@
       border: 1px solid #1b5e20;
     }
     .game-board { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
-    .hand { background: #1b5e20; padding: 12px; border-radius: 8px; width: 45%; min-height: 100px; }
+    .hand { background: #1b5e20; padding: 12px; border-radius: 8px; width: 45%; min-height: 110px; }
     .card-item {
       display: inline-block;
       background: #ffffff;
-      padding: 4px 8px;
+      padding: 5px 8px;
       margin: 3px;
       border-radius: 4px;
       font-weight: bold;
@@ -149,22 +149,42 @@
     if (gameOver) return;
 
     if (gameCount < 3) {
-      dealerScore = Math.min(21, playerScore + Math.floor(Math.random() * 2) + 1);
-      var dummyCard = { name: dealerScore, value: dealerScore, suit: '♠', color: '#111111' };
-      appendCardToHTML('dealer-cards', dummyCard);
+      // Partidas 1 y 2: La banca saca cartas de forma realista hasta superar al jugador
+      while (dealerScore <= playerScore && dealerScore <= 21) {
+        var diff = 21 - dealerScore;
+        // Seleccionamos una carta realista
+        var card = getRandomCard();
+        
+        // Ajuste sutil si la carta aleatoria la pasara de 21 prematuramente
+        if (dealerScore + card.value > 21) {
+          var safeVal = Math.min(diff, Math.max(1, playerScore - dealerScore + 1));
+          card = { name: safeVal.toString(), value: safeVal, suit: suits[Math.floor(Math.random()*4)].symbol, color: '#111111' };
+        }
+        
+        dealerScore += card.value;
+        appendCardToHTML('dealer-cards', card);
+      }
+
       document.getElementById('dealer-score').innerText = dealerScore;
       document.getElementById('status-msg').innerText = 'La banca gana con ' + dealerScore + ' frente a tus ' + playerScore + '.';
       endRound(false);
+
     } else {
-      dealerScore = playerScore > 17 ? playerScore - 2 : 22;
-      if (dealerScore > 21) {
-        document.getElementById('dealer-cards').innerHTML = '<span class="card-item" style="color:#d32f2f;">¡SE PASÓ!</span>';
-        document.getElementById('dealer-score').innerText = '>21';
-      } else {
-        var dummyCard = { name: dealerScore, value: dealerScore, suit: '♦', color: '#d32f2f' };
-        appendCardToHTML('dealer-cards', dummyCard);
-        document.getElementById('dealer-score').innerText = dealerScore;
+      // Partida 3: La banca intenta jugar normal pero termina perdiendo
+      while (dealerScore < 17) {
+        var card = getRandomCard();
+        dealerScore += card.value;
+        appendCardToHTML('dealer-cards', card);
       }
+
+      // Si por azar la banca no se pasó y supera al jugador, forzamos una última carta para que se pase de 21
+      if (dealerScore <= 21 && dealerScore >= playerScore) {
+        var bustCard = { name: '10', value: 10, suit: '♦', color: '#d32f2f' };
+        dealerScore += bustCard.value;
+        appendCardToHTML('dealer-cards', bustCard);
+      }
+
+      document.getElementById('dealer-score').innerText = dealerScore > 21 ? '¡SE PASÓ! (' + dealerScore + ')' : dealerScore;
       document.getElementById('status-msg').innerText = '¡Has ganado a la banca!';
       endRound(true);
     }

@@ -73,7 +73,7 @@
   <div>
     <button id="btn-hit" onclick="drawCard()">Pedir Carta</button>
     <button id="btn-stand" onclick="stand()">Plantarse</button>
-    <button id="btn-reset" onclick="startNewGame()" style="display:none; background:#ff9800; color:#fff;">Siguiente Partida</button>
+    <button id="btn-reset" onclick="startNewGame()" style="display:none; background:#ff9800; color:#fff;">Nueva Partida</button>
   </div>
 
   <div id="final-reward" style="display:none; margin-top:20px; padding:15px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
@@ -84,7 +84,6 @@
 </div>
 
 <script>
-  var gameCount = 1;
   var playerScore = 0;
   var dealerScore = 0;
   var gameOver = false;
@@ -96,7 +95,6 @@
     { symbol: '♦', color: '#d32f2f' }
   ];
 
-  // Baraja estándar
   var cardDeck = [
     { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
     { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
@@ -130,7 +128,11 @@
     document.getElementById('btn-hit').disabled = false;
     document.getElementById('btn-stand').disabled = false;
     document.getElementById('btn-reset').style.display = 'none';
+    document.getElementById('final-reward').style.display = 'none';
     document.getElementById('status-msg').innerText = '¡Haz tu jugada!';
+
+    // Repartir 1 carta inicial al jugador
+    drawCard();
   }
 
   function drawCard() {
@@ -141,7 +143,7 @@
     document.getElementById('player-score').innerText = playerScore;
 
     if (playerScore > 21) {
-      document.getElementById('status-msg').innerText = '¡Te has pasado de 21! La banca gana.';
+      document.getElementById('status-msg').innerText = '¡Te has pasado de 21! Gana la banca.';
       endRound(false);
     }
   }
@@ -149,47 +151,28 @@
   function stand() {
     if (gameOver) return;
 
-    if (gameCount < 3) {
-      // Partidas 1 y 2: La banca saca varias cartas reales hasta superar al jugador
-      while (dealerScore <= playerScore && dealerScore <= 21) {
-        var card = getRandomCard();
-        
-        // Si la carta aleatoria hiciese que la banca se pase de 21, busca en la baraja una carta baja válida
-        if (dealerScore + card.value > 21) {
-          var validCards = cardDeck.filter(function(c) { return (dealerScore + c.value) <= 21; });
-          if (validCards.length > 0) {
-            var selected = validCards[Math.floor(Math.random() * validCards.length)];
-            var randomSuit = suits[Math.floor(Math.random() * suits.length)];
-            card = { name: selected.name, value: selected.value, suit: randomSuit.symbol, color: randomSuit.color };
-          }
-        }
+    // Regla clásica del Blackjack: La banca pide carta obligatoriamente si suma menos de 17
+    while (dealerScore < 17) {
+      var card = getRandomCard();
+      dealerScore += card.value;
+      appendCardToHTML('dealer-cards', card);
+    }
 
-        dealerScore += card.value;
-        appendCardToHTML('dealer-cards', card);
-      }
+    document.getElementById('dealer-score').innerText = dealerScore;
 
-      document.getElementById('dealer-score').innerText = dealerScore;
+    // Evaluación justa del resultado
+    if (dealerScore > 21) {
+      document.getElementById('status-msg').innerText = '¡La banca se ha pasado de 21!';
+      endRound(true);
+    } else if (playerScore > dealerScore) {
+      document.getElementById('status-msg').innerText = '¡Tu mano supera a la banca!';
+      endRound(true);
+    } else if (playerScore === dealerScore) {
+      document.getElementById('status-msg').innerText = 'Empate. La banca gana en caso de empate.';
+      endRound(false);
+    } else {
       document.getElementById('status-msg').innerText = 'La banca gana con ' + dealerScore + ' frente a tus ' + playerScore + '.';
       endRound(false);
-
-    } else {
-      // Partida 3: La banca saca cartas normales pero acaba pasándose de 21
-      while (dealerScore < 17) {
-        var card = getRandomCard();
-        dealerScore += card.value;
-        appendCardToHTML('dealer-cards', card);
-      }
-
-      // Fuerza que se pase en la partida 3 si se hubiese quedado por debajo o igual
-      if (dealerScore <= 21 && dealerScore >= playerScore) {
-        var bustCard = { name: '10', value: 10, suit: '♦', color: '#d32f2f' };
-        dealerScore += bustCard.value;
-        appendCardToHTML('dealer-cards', bustCard);
-      }
-
-      document.getElementById('dealer-score').innerText = dealerScore > 21 ? '¡SE PASÓ! (' + dealerScore + ')' : dealerScore;
-      document.getElementById('status-msg').innerText = '¡Has ganado a la banca!';
-      endRound(true);
     }
   }
 
@@ -198,13 +181,10 @@
     document.getElementById('btn-hit').disabled = true;
     document.getElementById('btn-stand').disabled = true;
 
-    if (playerWon && gameCount === 3) {
+    if (playerWon) {
       document.getElementById('final-reward').style.display = 'block';
     } else {
-      if (playerScore <= 21) gameCount++;
-      if (gameCount <= 3) {
-        document.getElementById('btn-reset').style.display = 'inline-block';
-      }
+      document.getElementById('btn-reset').style.display = 'inline-block';
     }
   }
 

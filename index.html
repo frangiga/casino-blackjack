@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casino Blackjack Console</title>
+  <style>
+    body {
+      background: #0a1f0a;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #blackjack-console {
+      background: #0f380f;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      border: 1px solid #1b5e20;
+    }
+    .game-board { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
+    .hand { background: #1b5e20; padding: 12px; border-radius: 8px; width: 45%; min-height: 100px; }
+    .card-item {
+      display: inline-block;
+      background: #ffffff;
+      padding: 4px 8px;
+      margin: 3px;
+      border-radius: 4px;
+      font-weight: bold;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    button {
+      padding: 10px 18px;
+      margin: 5px;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 0.95em;
+    }
+    button:hover { background: #ffca28; }
+    button:disabled { background: #555; color: #888; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div id="blackjack-console">
+  <h2 style="margin-top:0;">♠️ Casino Blackjack Console ♣️</h2>
+  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Haz tu jugada!</p>
+  
+  <div class="game-board">
+    <div class="hand">
+      <h3 style="margin:0 0 10px 0; font-size:1em;">Banca: <span id="dealer-score">0</span></h3>
+      <div id="dealer-cards"></div>
+    </div>
+    <div class="hand">
+      <h3 style="margin:0 0 10px 0; font-size:1em;">Tu Mano: <span id="player-score">0</span></h3>
+      <div id="player-cards"></div>
+    </div>
+  </div>
+
+  <div>
+    <button id="btn-hit" onclick="drawCard()">Pedir Carta</button>
+    <button id="btn-stand" onclick="stand()">Plantarse</button>
+    <button id="btn-reset" onclick="startNewGame()" style="display:none; background:#ff9800; color:#fff;">Siguiente Partida</button>
+  </div>
+
+  <div id="final-reward" style="display:none; margin-top:20px; padding:15px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
+    <h3 style="color:#4caf50; margin-top:0;">🎉 ¡¡¡ENHORABUENA! HAS BATIDO A LA BANCA !!!🎉</h3>
+    <p style="margin:5px 0;">La contraseña para el certitude es:</p>
+    <p style="font-size:1.3em; color:#ffd700; margin:0;"><strong>HAGAN-JUEGO-777</strong></p>
+  </div>
+</div>
+
+<script>
+  var gameCount = 1;
+  var playerScore = 0;
+  var dealerScore = 0;
+  var gameOver = false;
+
+  var suits = [
+    { symbol: '♠', color: '#111111' },
+    { symbol: '♣', color: '#111111' },
+    { symbol: '♥', color: '#d32f2f' },
+    { symbol: '♦', color: '#d32f2f' }
+  ];
+
+  var cardValues = [
+    { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
+    { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
+    { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
+    { name: 'J', value: 10 }, { name: 'Q', value: 10 }, { name: 'K', value: 10 }, { name: 'A', value: 11 }
+  ];
+
+  function getRandomCard() {
+    var randomCard = cardValues[Math.floor(Math.random() * cardValues.length)];
+    var randomSuit = suits[Math.floor(Math.random() * suits.length)];
+    return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
+  }
+
+  function appendCardToHTML(containerId, card) {
+    var container = document.getElementById(containerId);
+    var cardSpan = document.createElement('span');
+    cardSpan.className = 'card-item';
+    cardSpan.style.color = card.color;
+    cardSpan.innerText = card.name + card.suit;
+    container.appendChild(cardSpan);
+  }
+
+  function startNewGame() {
+    playerScore = 0;
+    dealerScore = 0;
+    gameOver = false;
+    document.getElementById('player-cards').innerHTML = '';
+    document.getElementById('dealer-cards').innerHTML = '';
+    document.getElementById('player-score').innerText = '0';
+    document.getElementById('dealer-score').innerText = '0';
+    document.getElementById('btn-hit').disabled = false;
+    document.getElementById('btn-stand').disabled = false;
+    document.getElementById('btn-reset').style.display = 'none';
+    document.getElementById('status-msg').innerText = '¡Haz tu jugada!';
+  }
+
+  function drawCard() {
+    if (gameOver) return;
+    var card = getRandomCard();
+    playerScore += card.value;
+    appendCardToHTML('player-cards', card);
+    document.getElementById('player-score').innerText = playerScore;
+
+    if (playerScore > 21) {
+      document.getElementById('status-msg').innerText = '¡Te has pasado de 21! La banca gana.';
+      endRound(false);
+    }
+  }
+
+  function stand() {
+    if (gameOver) return;
+
+    if (gameCount < 3) {
+      dealerScore = Math.min(21, playerScore + Math.floor(Math.random() * 2) + 1);
+      var dummyCard = { name: dealerScore, value: dealerScore, suit: '♠', color: '#111111' };
+      appendCardToHTML('dealer-cards', dummyCard);
+      document.getElementById('dealer-score').innerText = dealerScore;
+      document.getElementById('status-msg').innerText = 'La banca gana con ' + dealerScore + ' frente a tus ' + playerScore + '.';
+      endRound(false);
+    } else {
+      dealerScore = playerScore > 17 ? playerScore - 2 : 22;
+      if (dealerScore > 21) {
+        document.getElementById('dealer-cards').innerHTML = '<span class="card-item" style="color:#d32f2f;">¡SE PASÓ!</span>';
+        document.getElementById('dealer-score').innerText = '>21';
+      } else {
+        var dummyCard = { name: dealerScore, value: dealerScore, suit: '♦', color: '#d32f2f' };
+        appendCardToHTML('dealer-cards', dummyCard);
+        document.getElementById('dealer-score').innerText = dealerScore;
+      }
+      document.getElementById('status-msg').innerText = '¡Has ganado a la banca!';
+      endRound(true);
+    }
+  }
+
+  function endRound(playerWon) {
+    gameOver = true;
+    document.getElementById('btn-hit').disabled = true;
+    document.getElementById('btn-stand').disabled = true;
+
+    if (playerWon && gameCount === 3) {
+      document.getElementById('final-reward').style.display = 'block';
+    } else {
+      if (playerScore <= 21) gameCount++;
+      if (gameCount <= 3) {
+        document.getElementById('btn-reset').style.display = 'inline-block';
+      }
+    }
+  }
+
+  startNewGame();
+</script>
+
+</body>
+</html>

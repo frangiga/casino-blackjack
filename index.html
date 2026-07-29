@@ -96,7 +96,8 @@
     { symbol: '♦', color: '#d32f2f' }
   ];
 
-  var cardValues = [
+  // Baraja estándar
+  var cardDeck = [
     { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
     { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
     { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
@@ -104,7 +105,7 @@
   ];
 
   function getRandomCard() {
-    var randomCard = cardValues[Math.floor(Math.random() * cardValues.length)];
+    var randomCard = cardDeck[Math.floor(Math.random() * cardDeck.length)];
     var randomSuit = suits[Math.floor(Math.random() * suits.length)];
     return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
   }
@@ -149,18 +150,20 @@
     if (gameOver) return;
 
     if (gameCount < 3) {
-      // Partidas 1 y 2: La banca saca cartas de forma realista hasta superar al jugador
+      // Partidas 1 y 2: La banca saca varias cartas reales hasta superar al jugador
       while (dealerScore <= playerScore && dealerScore <= 21) {
-        var diff = 21 - dealerScore;
-        // Seleccionamos una carta realista
         var card = getRandomCard();
         
-        // Ajuste sutil si la carta aleatoria la pasara de 21 prematuramente
+        // Si la carta aleatoria hiciese que la banca se pase de 21, busca en la baraja una carta baja válida
         if (dealerScore + card.value > 21) {
-          var safeVal = Math.min(diff, Math.max(1, playerScore - dealerScore + 1));
-          card = { name: safeVal.toString(), value: safeVal, suit: suits[Math.floor(Math.random()*4)].symbol, color: '#111111' };
+          var validCards = cardDeck.filter(function(c) { return (dealerScore + c.value) <= 21; });
+          if (validCards.length > 0) {
+            var selected = validCards[Math.floor(Math.random() * validCards.length)];
+            var randomSuit = suits[Math.floor(Math.random() * suits.length)];
+            card = { name: selected.name, value: selected.value, suit: randomSuit.symbol, color: randomSuit.color };
+          }
         }
-        
+
         dealerScore += card.value;
         appendCardToHTML('dealer-cards', card);
       }
@@ -170,14 +173,14 @@
       endRound(false);
 
     } else {
-      // Partida 3: La banca intenta jugar normal pero termina perdiendo
+      // Partida 3: La banca saca cartas normales pero acaba pasándose de 21
       while (dealerScore < 17) {
         var card = getRandomCard();
         dealerScore += card.value;
         appendCardToHTML('dealer-cards', card);
       }
 
-      // Si por azar la banca no se pasó y supera al jugador, forzamos una última carta para que se pase de 21
+      // Fuerza que se pase en la partida 3 si se hubiese quedado por debajo o igual
       if (dealerScore <= 21 && dealerScore >= playerScore) {
         var bustCard = { name: '10', value: 10, suit: '♦', color: '#d32f2f' };
         dealerScore += bustCard.value;

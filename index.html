@@ -72,13 +72,13 @@
 <div id="blackjack-console">
   <h2 style="margin-top:0;">♠️ Casino Blackjack ♣️</h2>
   
-  <!-- Marcador global de victorias (0/3) -->
+  <!-- Marcador global de victorias (0/5) -->
   <div class="series-tracker">
-    <div>Banca: <span id="dealer-wins" class="score-badge">0/3</span></div>
-    <div>Jugador: <span id="player-wins" class="score-badge">0/3</span></div>
+    <div>Banca: <span id="dealer-wins" class="score-badge">0/5</span></div>
+    <div>Jugador: <span id="player-wins" class="score-badge">0/5</span></div>
   </div>
 
-  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Consigue 3 victorias para ganar!</p>
+  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Consigue 5 victorias para ganar!</p>
   
   <div class="game-board">
     <div class="hand">
@@ -98,9 +98,9 @@
     <button id="btn-reset-match" onclick="resetMatch()" style="display:none; background:#d32f2f; color:#fff;">Reiniciar Partida</button>
   </div>
 
-  <!-- Premio final al llegar a 3 victorias -->
+  <!-- Premio final al llegar a 5 victorias -->
   <div id="final-reward" style="display:none; margin-top:20px; padding:15px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
-    <h3 style="color:#4caf50; margin-top:0;">🎉 ¡¡¡ENHORABUENA! HAS GANADO EL TORNEO !!!🎉</h3>
+    <h3 style="color:#4caf50; margin-top:0; white-space: nowrap;">🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉</h3>
     <p style="margin:5px 0;">La clave para el certitude es:</p>
     <p style="font-size:1.3em; color:#ffd700; margin:0;"><strong>HAGAN-JUEGO-777</strong></p>
   </div>
@@ -143,8 +143,8 @@
   }
 
   function updateScoreboard() {
-    document.getElementById('player-wins').innerText = playerWins + '/3';
-    document.getElementById('dealer-wins').innerText = dealerWins + '/3';
+    document.getElementById('player-wins').innerText = playerWins + '/5';
+    document.getElementById('dealer-wins').innerText = dealerWins + '/5';
   }
 
   function resetMatch() {
@@ -228,12 +228,12 @@
 
     updateScoreboard();
 
-    // Comprobar si alguien ha alcanzado las 3 victorias
-    if (playerWins === 3) {
-      document.getElementById('status-msg').innerText = '¡HAZ GANADO LA PARTIDA!';
+    // Comprobar si alguien ha alcanzado las 5 victorias
+    if (playerWins === 5) {
+      document.getElementById('status-msg').innerText = '¡HAS GANADO LA PARTIDA!';
       document.getElementById('final-reward').style.display = 'block';
-    } else if (dealerWins === 3) {
-      document.getElementById('status-msg').innerText = 'La banca ha alcanzado 3 victorias. ¡Has perdido!';
+    } else if (dealerWins === 5) {
+      document.getElementById('status-msg').innerText = 'La banca ha alcanzado 5 victorias. ¡Has perdido!';
       document.getElementById('btn-reset-match').style.display = 'inline-block';
     } else {
       // La partida continúa

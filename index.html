@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Casino Blackjack Console</title>
+  <title>Casino Blackjack - fran_giga</title>
   <style>
     body {
       background: #0a1f0a;
@@ -21,11 +21,25 @@
       background: #0f380f;
       padding: 20px;
       border-radius: 12px;
-      max-width: 450px;
+      max-width: 480px;
       width: 100%;
       text-align: center;
       box-shadow: 0 4px 15px rgba(0,0,0,0.6);
       border: 1px solid #1b5e20;
+    }
+    .series-tracker {
+      background: #082108;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #2e7d32;
+      display: flex;
+      justify-content: space-around;
+      font-weight: bold;
+    }
+    .score-badge {
+      color: #ffd700;
+      font-size: 1.2em;
     }
     .game-board { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
     .hand { background: #1b5e20; padding: 12px; border-radius: 8px; width: 45%; min-height: 110px; }
@@ -56,8 +70,15 @@
 <body>
 
 <div id="blackjack-console">
-  <h2 style="margin-top:0;">♠️ Casino Blackjack Console ♣️</h2>
-  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Haz tu jugada!</p>
+  <h2 style="margin-top:0;">♠️ Casino Blackjack ♣️</h2>
+  
+  <!-- Marcador global de victorias (0/3) -->
+  <div class="series-tracker">
+    <div>Banca: <span id="dealer-wins" class="score-badge">0/3</span></div>
+    <div>Jugador: <span id="player-wins" class="score-badge">0/3</span></div>
+  </div>
+
+  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Consigue 3 victorias para ganar!</p>
   
   <div class="game-board">
     <div class="hand">
@@ -73,12 +94,14 @@
   <div>
     <button id="btn-hit" onclick="drawCard()">Pedir Carta</button>
     <button id="btn-stand" onclick="stand()">Plantarse</button>
-    <button id="btn-reset" onclick="startNewGame()" style="display:none; background:#ff9800; color:#fff;">Nueva Partida</button>
+    <button id="btn-next-round" onclick="startNewRound()" style="display:none; background:#ff9800; color:#fff;">Siguiente Mano</button>
+    <button id="btn-reset-match" onclick="resetMatch()" style="display:none; background:#d32f2f; color:#fff;">Reiniciar Partida</button>
   </div>
 
+  <!-- Premio final al llegar a 3 victorias -->
   <div id="final-reward" style="display:none; margin-top:20px; padding:15px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
-    <h3 style="color:#4caf50; margin-top:0;">🎉 ¡¡¡ENHORABUENA! HAS BATIDO A LA BANCA !!!🎉</h3>
-    <p style="margin:5px 0;">La contraseña para el certitude es:</p>
+    <h3 style="color:#4caf50; margin-top:0;">🎉 ¡¡¡ENHORABUENA! HAS GANADO EL TORNEO !!!🎉</h3>
+    <p style="margin:5px 0;">La clave para el certitude es:</p>
     <p style="font-size:1.3em; color:#ffd700; margin:0;"><strong>HAGAN-JUEGO-777</strong></p>
   </div>
 </div>
@@ -86,7 +109,9 @@
 <script>
   var playerScore = 0;
   var dealerScore = 0;
-  var gameOver = false;
+  var playerWins = 0;
+  var dealerWins = 0;
+  var roundOver = false;
 
   var suits = [
     { symbol: '♠', color: '#111111' },
@@ -117,41 +142,56 @@
     container.appendChild(cardSpan);
   }
 
-  function startNewGame() {
+  function updateScoreboard() {
+    document.getElementById('player-wins').innerText = playerWins + '/3';
+    document.getElementById('dealer-wins').innerText = dealerWins + '/3';
+  }
+
+  function resetMatch() {
+    playerWins = 0;
+    dealerWins = 0;
+    updateScoreboard();
+    document.getElementById('final-reward').style.display = 'none';
+    document.getElementById('btn-reset-match').style.display = 'none';
+    startNewRound();
+  }
+
+  function startNewRound() {
     playerScore = 0;
     dealerScore = 0;
-    gameOver = false;
+    roundOver = false;
+
     document.getElementById('player-cards').innerHTML = '';
     document.getElementById('dealer-cards').innerHTML = '';
     document.getElementById('player-score').innerText = '0';
     document.getElementById('dealer-score').innerText = '0';
+    
     document.getElementById('btn-hit').disabled = false;
     document.getElementById('btn-stand').disabled = false;
-    document.getElementById('btn-reset').style.display = 'none';
-    document.getElementById('final-reward').style.display = 'none';
+    document.getElementById('btn-next-round').style.display = 'none';
     document.getElementById('status-msg').innerText = '¡Haz tu jugada!';
 
-    // Repartir 1 carta inicial al jugador
+    // Carta inicial al jugador
     drawCard();
   }
 
   function drawCard() {
-    if (gameOver) return;
+    if (roundOver) return;
     var card = getRandomCard();
     playerScore += card.value;
     appendCardToHTML('player-cards', card);
     document.getElementById('player-score').innerText = playerScore;
 
     if (playerScore > 21) {
-      document.getElementById('status-msg').innerText = '¡Te has pasado de 21! Gana la banca.';
+      document.getElementById('status-msg').innerText = '¡Te pasaste de 21! Punto para la banca.';
       endRound(false);
     }
   }
 
   function stand() {
-    if (gameOver) return;
+    if (roundOver) return;
 
-    // Regla clásica del Blackjack: La banca pide carta obligatoriamente si suma menos de 17
+    // La banca pide carta hasta sumar 17 o más
     while (dealerScore < 17) {
       var card = getRandomCard();
       dealerScore += card.value;
@@ -160,35 +200,49 @@
 
     document.getElementById('dealer-score').innerText = dealerScore;
 
-    // Evaluación justa del resultado
     if (dealerScore > 21) {
-      document.getElementById('status-msg').innerText = '¡La banca se ha pasado de 21!';
+      document.getElementById('status-msg').innerText = '¡La banca se pasó de 21! Punto para ti.';
       endRound(true);
     } else if (playerScore > dealerScore) {
-      document.getElementById('status-msg').innerText = '¡Tu mano supera a la banca!';
+      document.getElementById('status-msg').innerText = '¡Tu mano supera a la banca! Punto para ti.';
       endRound(true);
     } else if (playerScore === dealerScore) {
-      document.getElementById('status-msg').innerText = 'Empate. La banca gana en caso de empate.';
+      document.getElementById('status-msg').innerText = 'Empate. Punto para la banca.';
       endRound(false);
     } else {
-      document.getElementById('status-msg').innerText = 'La banca gana con ' + dealerScore + ' frente a tus ' + playerScore + '.';
+      document.getElementById('status-msg').innerText = 'La banca gana la mano con ' + dealerScore + '.';
       endRound(false);
     }
   }
 
-  function endRound(playerWon) {
-    gameOver = true;
+  function endRound(playerWonRound) {
+    roundOver = true;
     document.getElementById('btn-hit').disabled = true;
     document.getElementById('btn-stand').disabled = true;
 
-    if (playerWon) {
-      document.getElementById('final-reward').style.display = 'block';
+    if (playerWonRound) {
+      playerWins++;
     } else {
-      document.getElementById('btn-reset').style.display = 'inline-block';
+      dealerWins++;
+    }
+
+    updateScoreboard();
+
+    // Comprobar si alguien ha alcanzado las 3 victorias
+    if (playerWins === 3) {
+      document.getElementById('status-msg').innerText = '¡HAZ GANADO LA PARTIDA!';
+      document.getElementById('final-reward').style.display = 'block';
+    } else if (dealerWins === 3) {
+      document.getElementById('status-msg').innerText = 'La banca ha alcanzado 3 victorias. ¡Has perdido!';
+      document.getElementById('btn-reset-match').style.display = 'inline-block';
+    } else {
+      // La partida continúa
+      document.getElementById('btn-next-round').style.display = 'inline-block';
     }
   }
 
-  startNewGame();
+  // Arrancar el juego al cargar
+  resetMatch();
 </script>
 
 </body>

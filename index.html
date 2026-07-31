@@ -319,6 +319,7 @@
       document.getElementById('player-score').textContent = calculateScore(playerCards);
       document.getElementById('dealer-score').textContent = calculateScore(dealerCards);
       document.getElementById('current-round').textContent = currentRound;
+      document.getElementById('total-rounds').textContent = TOTAL_ROUNDS;
       document.getElementById('user-wins').textContent = userWins;
       document.getElementById('dealer-wins').textContent = dealerWins;
     }
@@ -404,7 +405,7 @@
       startRound();
     }
 
-    // Iniciar
+    // Iniciar juego
     startRound();
   </script>
 </body>

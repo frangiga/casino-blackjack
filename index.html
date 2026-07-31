@@ -3,411 +3,247 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Torneo de Blackjack</title>
+  <title>Casino Blackjack - fran_giga</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #1a252f;
-      color: #ffffff;
+      background: #0a1f0a;
+      color: #fff;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 15px;
+      margin: 0;
+      padding: 10px;
+      box-sizing: border-box;
     }
-
-    /* Marco principal encuadrado */
-    .game-card {
-      background-color: #2c3e50;
-      border: 3px solid #34495e;
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
+    #blackjack-console {
+      background: #0f380f;
+      padding: 20px;
+      border-radius: 12px;
       max-width: 480px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      border: 1px solid #1b5e20;
     }
-
-    h1 {
-      font-size: 1.8rem;
-      color: #f39c12;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .round-info {
-      font-size: 1.1rem;
-      background-color: #1e2b37;
-      padding: 8px 16px;
-      border-radius: 20px;
-      display: inline-block;
-      margin: 0 auto;
-      border: 1px solid #34495e;
-    }
-
-    .scoreboard {
+    .series-tracker {
+      background: #082108;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #2e7d32;
       display: flex;
       justify-content: space-around;
-      background-color: #1e2b37;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #34495e;
-    }
-
-    .score-box h3 {
-      font-size: 0.9rem;
-      color: #bdc3c7;
-      margin-bottom: 4px;
-    }
-
-    .score-box p {
-      font-size: 1.5rem;
       font-weight: bold;
-      color: #2ecc71;
     }
-
-    /* Tablero de cartas */
-    .board-section {
-      background-color: #27ae60;
-      border-radius: 12px;
-      padding: 15px;
-      border: 2px solid #1e8449;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .score-badge {
+      color: #ffd700;
+      font-size: 1.2em;
     }
-
-    .hand-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .cards-container {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      min-height: 48px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      background: white;
-      color: #333;
+    .game-board { display: flex; justify-content: space-around; margin: 15px 0; gap: 10px; }
+    .hand { background: #1b5e20; padding: 12px; border-radius: 8px; width: 45%; min-height: 110px; }
+    .card-item {
+      display: inline-block;
+      background: #ffffff;
+      padding: 5px 8px;
+      margin: 3px;
+      border-radius: 4px;
       font-weight: bold;
-      font-size: 1.1rem;
-      padding: 8px 12px;
-      border-radius: 6px;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-      min-width: 36px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     }
-
-    .card.red {
-      color: #e74c3c;
-    }
-
-    /* BANNER INTEGRADO DENTRO DEL MARCO */
-    .hidden {
-      display: none !important;
-    }
-
-    .final-banner {
-      width: 100%;
-      padding: 14px 10px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 1.05rem;
-      word-wrap: break-word;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .final-banner.win {
-      background-color: #27ae60;
-      color: #ffffff;
-      border: 2px solid #a5d6a7;
-    }
-
-    .final-banner.lose {
-      background-color: #c62828;
-      color: #ffffff;
-      border: 2px solid #ef9a9a;
-    }
-
-    .final-banner.draw {
-      background-color: #f39c12;
-      color: #ffffff;
-      border: 2px solid #ffe082;
-    }
-
-    .controls {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
     button {
-      background-color: #e67e22;
-      color: white;
+      padding: 10px 18px;
+      margin: 5px;
+      background: #ffd700;
+      color: #000;
       border: none;
-      padding: 12px 20px;
-      font-size: 1rem;
       font-weight: bold;
-      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      flex: 1;
+      border-radius: 5px;
+      font-size: 0.95em;
     }
-
-    button:hover:not(:disabled) {
-      background-color: #d35400;
-    }
-
-    button:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    button:disabled {
-      background-color: #7f8c8d;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    button.secondary {
-      background-color: #2980b9;
-    }
-
-    button.secondary:hover:not(:disabled) {
-      background-color: #3498db;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
+    button:hover { background: #ffca28; }
+    button:disabled { background: #555; color: #888; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
-  <div class="game-card">
-    <h1>Blackjack</h1>
-    
-    <div class="round-info">
-      Partida <span id="current-round">1</span> de <span id="total-rounds">10</span>
-    </div>
+<div id="blackjack-console">
+  <h2 style="margin-top:0;">♠️ Casino Blackjack ♣️</h2>
+  
+  <!-- Marcador global de victorias (0/5) -->
+  <div class="series-tracker">
+    <div>Banca: <span id="dealer-wins" class="score-badge">0/5</span></div>
+    <div>Jugador: <span id="player-wins" class="score-badge">0/5</span></div>
+  </div>
 
-    <div class="scoreboard">
-      <div class="score-box">
-        <h3>TUS VICTORIAS</h3>
-        <p id="user-wins">0</p>
-      </div>
-      <div class="score-box">
-        <h3>CRUPIER</h3>
-        <p id="dealer-wins">0</p>
-      </div>
+  <p id="status-msg" style="color: #ffd700; font-weight: bold;">¡Consigue 5 victorias para ganar!</p>
+  
+  <div class="game-board">
+    <div class="hand">
+      <h3 style="margin:0 0 10px 0; font-size:1em;">Banca: <span id="dealer-score">0</span></h3>
+      <div id="dealer-cards"></div>
     </div>
-
-    <!-- BANNER DE FIN DE PARTIDA ENCUADRADO INTERNAMENTE -->
-    <div id="final-banner" class="final-banner hidden">
-      <span id="final-message"></span>
-    </div>
-
-    <div class="board-section">
-      <div>
-        <div class="hand-title">Crupier (<span id="dealer-score">0</span>)</div>
-        <div id="dealer-cards" class="cards-container"></div>
-      </div>
-      <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.2);">
-      <div>
-        <div class="hand-title">Tus Cartas (<span id="player-score">0</span>)</div>
-        <div id="player-cards" class="cards-container"></div>
-      </div>
-    </div>
-
-    <div class="controls">
-      <button id="btn-hit" onclick="hit()">Pedir</button>
-      <button id="btn-stand" class="secondary" onclick="stand()">Plantarse</button>
-      <button id="btn-next" onclick="nextRound()" style="display: none;">Siguiente Ronda</button>
-      <button id="btn-reset" class="secondary" onclick="resetGame()" style="display: none;">Nueva Partida</button>
+    <div class="hand">
+      <h3 style="margin:0 0 10px 0; font-size:1em;">Tu Mano: <span id="player-score">0</span></h3>
+      <div id="player-cards"></div>
     </div>
   </div>
 
-  <script>
-    const TOTAL_ROUNDS = 10;
-    let currentRound = 1;
-    let userWins = 0;
-    let dealerWins = 0;
+  <div>
+    <button id="btn-hit" onclick="drawCard()">Pedir Carta</button>
+    <button id="btn-stand" onclick="stand()">Plantarse</button>
+    <button id="btn-next-round" onclick="startNewRound()" style="display:none; background:#ff9800; color:#fff;">Siguiente Mano</button>
+    <button id="btn-reset-match" onclick="resetMatch()" style="display:none; background:#d32f2f; color:#fff;">Reiniciar Partida</button>
+  </div>
 
-    let deck = [];
-    let playerCards = [];
-    let dealerCards = [];
-    let gameOverRound = false;
+  <!-- Premio final al llegar a 5 victorias -->
+  <div id="final-reward" style="display:none; margin-top:20px; padding:15px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
+    <h3 style="color:#4caf50; margin-top:0; white-space: nowrap;">🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉</h3>
+    <p style="margin:5px 0;">La clave para el certitude es:</p>
+    <p style="font-size:1.3em; color:#ffd700; margin:0;"><strong>HAGAN-JUEGO-777</strong></p>
+  </div>
+</div>
 
-    const suits = ['♠', '♥', '♦', '♣'];
-    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+<script>
+  var playerScore = 0;
+  var dealerScore = 0;
+  var playerWins = 0;
+  var dealerWins = 0;
+  var roundOver = false;
 
-    function createDeck() {
-      deck = [];
-      for (let suit of suits) {
-        for (let val of values) {
-          deck.push({ suit, val });
-        }
-      }
-      deck.sort(() => Math.random() - 0.5);
+  var suits = [
+    { symbol: '♠', color: '#111111' },
+    { symbol: '♣', color: '#111111' },
+    { symbol: '♥', color: '#d32f2f' },
+    { symbol: '♦', color: '#d32f2f' }
+  ];
+
+  var cardDeck = [
+    { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
+    { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
+    { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
+    { name: 'J', value: 10 }, { name: 'Q', value: 10 }, { name: 'K', value: 10 }, { name: 'A', value: 11 }
+  ];
+
+  function getRandomCard() {
+    var randomCard = cardDeck[Math.floor(Math.random() * cardDeck.length)];
+    var randomSuit = suits[Math.floor(Math.random() * suits.length)];
+    return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
+  }
+
+  function appendCardToHTML(containerId, card) {
+    var container = document.getElementById(containerId);
+    var cardSpan = document.createElement('span');
+    cardSpan.className = 'card-item';
+    cardSpan.style.color = card.color;
+    cardSpan.innerText = card.name + card.suit;
+    container.appendChild(cardSpan);
+  }
+
+  function updateScoreboard() {
+    document.getElementById('player-wins').innerText = playerWins + '/5';
+    document.getElementById('dealer-wins').innerText = dealerWins + '/5';
+  }
+
+  function resetMatch() {
+    playerWins = 0;
+    dealerWins = 0;
+    updateScoreboard();
+    document.getElementById('final-reward').style.display = 'none';
+    document.getElementById('btn-reset-match').style.display = 'none';
+    startNewRound();
+  }
+
+  function startNewRound() {
+    playerScore = 0;
+    dealerScore = 0;
+    roundOver = false;
+
+    document.getElementById('player-cards').innerHTML = '';
+    document.getElementById('dealer-cards').innerHTML = '';
+    document.getElementById('player-score').innerText = '0';
+    document.getElementById('dealer-score').innerText = '0';
+    
+    document.getElementById('btn-hit').disabled = false;
+    document.getElementById('btn-stand').disabled = false;
+    document.getElementById('btn-next-round').style.display = 'none';
+    document.getElementById('status-msg').innerText = '¡Haz tu jugada!';
+
+    // Carta inicial al jugador
+    drawCard();
+  }
+
+  function drawCard() {
+    if (roundOver) return;
+    var card = getRandomCard();
+    playerScore += card.value;
+    appendCardToHTML('player-cards', card);
+    document.getElementById('player-score').innerText = playerScore;
+
+    if (playerScore > 21) {
+      document.getElementById('status-msg').innerText = '¡Te pasaste de 21! Punto para la banca.';
+      endRound(false);
+    }
+  }
+
+  function stand() {
+    if (roundOver) return;
+
+    // La banca pide carta hasta sumar 17 o más
+    while (dealerScore < 17) {
+      var card = getRandomCard();
+      dealerScore += card.value;
+      appendCardToHTML('dealer-cards', card);
     }
 
-    function getCardValue(card) {
-      if (['J', 'Q', 'K'].includes(card.val)) return 10;
-      if (card.val === 'A') return 11;
-      return parseInt(card.val);
+    document.getElementById('dealer-score').innerText = dealerScore;
+
+    if (dealerScore > 21) {
+      document.getElementById('status-msg').innerText = '¡La banca se pasó de 21! Punto para ti.';
+      endRound(true);
+    } else if (playerScore > dealerScore) {
+      document.getElementById('status-msg').innerText = '¡Tu mano supera a la banca! Punto para ti.';
+      endRound(true);
+    } else if (playerScore === dealerScore) {
+      document.getElementById('status-msg').innerText = 'Empate. Punto para la banca.';
+      endRound(false);
+    } else {
+      document.getElementById('status-msg').innerText = 'La banca gana la mano con ' + dealerScore + '.';
+      endRound(false);
+    }
+  }
+
+  function endRound(playerWonRound) {
+    roundOver = true;
+    document.getElementById('btn-hit').disabled = true;
+    document.getElementById('btn-stand').disabled = true;
+
+    if (playerWonRound) {
+      playerWins++;
+    } else {
+      dealerWins++;
     }
 
-    function calculateScore(hand) {
-      let score = 0;
-      let aces = 0;
-      for (let card of hand) {
-        score += getCardValue(card);
-        if (card.val === 'A') aces++;
-      }
-      while (score > 21 && aces > 0) {
-        score -= 10;
-        aces--;
-      }
-      return score;
+    updateScoreboard();
+
+    // Comprobar si alguien ha alcanzado las 5 victorias
+    if (playerWins === 5) {
+      document.getElementById('status-msg').innerText = '¡HAS GANADO LA PARTIDA!';
+      document.getElementById('final-reward').style.display = 'block';
+    } else if (dealerWins === 5) {
+      document.getElementById('status-msg').innerText = 'La banca ha alcanzado 5 victorias. ¡Has perdido!';
+      document.getElementById('btn-reset-match').style.display = 'inline-block';
+    } else {
+      // La partida continúa
+      document.getElementById('btn-next-round').style.display = 'inline-block';
     }
+  }
 
-    function renderHand(containerId, hand) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      hand.forEach(card => {
-        const div = document.createElement('div');
-        const isRed = card.suit === '♥' || card.suit === '♦';
-        div.className = `card ${isRed ? 'red' : ''}`;
-        div.textContent = `${card.val}${card.suit}`;
-        container.appendChild(div);
-      });
-    }
+  // Arrancar el juego al cargar
+  resetMatch();
+</script>
 
-    function startRound() {
-      createDeck();
-      playerCards = [deck.pop(), deck.pop()];
-      dealerCards = [deck.pop()];
-      gameOverRound = false;
-
-      document.getElementById('btn-hit').style.display = 'inline-block';
-      document.getElementById('btn-stand').style.display = 'inline-block';
-      document.getElementById('btn-next').style.display = 'none';
-
-      updateUI();
-    }
-
-    function updateUI() {
-      renderHand('player-cards', playerCards);
-      renderHand('dealer-cards', dealerCards);
-      document.getElementById('player-score').textContent = calculateScore(playerCards);
-      document.getElementById('dealer-score').textContent = calculateScore(dealerCards);
-      document.getElementById('current-round').textContent = currentRound;
-      document.getElementById('total-rounds').textContent = TOTAL_ROUNDS;
-      document.getElementById('user-wins').textContent = userWins;
-      document.getElementById('dealer-wins').textContent = dealerWins;
-    }
-
-    function hit() {
-      if (gameOverRound) return;
-      playerCards.push(deck.pop());
-      updateUI();
-
-      if (calculateScore(playerCards) > 21) {
-        endRound(false);
-      }
-    }
-
-    function stand() {
-      if (gameOverRound) return;
-      while (calculateScore(dealerCards) < 17) {
-        dealerCards.push(deck.pop());
-      }
-      updateUI();
-
-      const pScore = calculateScore(playerCards);
-      const dScore = calculateScore(dealerCards);
-
-      if (dScore > 21 || pScore > dScore) {
-        endRound(true);
-      } else if (pScore < dScore) {
-        endRound(false);
-      } else {
-        endRound(null);
-      }
-    }
-
-    function endRound(userWon) {
-      gameOverRound = true;
-      if (userWon === true) userWins++;
-      else if (userWon === false) dealerWins++;
-
-      document.getElementById('user-wins').textContent = userWins;
-      document.getElementById('dealer-wins').textContent = dealerWins;
-
-      document.getElementById('btn-hit').style.display = 'none';
-      document.getElementById('btn-stand').style.display = 'none';
-
-      if (currentRound < TOTAL_ROUNDS) {
-        document.getElementById('btn-next').style.display = 'inline-block';
-      } else {
-        checkGameOver();
-      }
-    }
-
-    function nextRound() {
-      currentRound++;
-      startRound();
-    }
-
-// CAMBIO 2: Inyectar el mensaje DENTRO del cuadro/contenedor existente
-function checkGameOver() {
-    if (currentRound > TOTAL_ROUNDS) {
-        // Usa el ID del contenedor de texto/mensajes que ya tiene tu interfaz bonita
-        const statusContainer = document.getElementById('mensaje') || document.getElementById('game-message') || document.getElementById('status'); 
-        
-        if (userWins > dealerWins) {
-            statusContainer.innerHTML = '🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉';
-            statusContainer.className = 'win-message'; // O la clase de estilo que ya tengas
-        } else if (userWins < dealerWins) {
-            statusContainer.innerHTML = '❌ ¡HAS PERDIDO LA PARTIDA! ❌';
-            statusContainer.className = 'lose-message';
-        } else {
-            statusContainer.innerHTML = '🤝 ¡EMPATE TÉCNICO! 🤝';
-        }
-        
-        // Deshabilitar botones de juego
-        disableButtons(); 
-    }
-}
-
-    function resetGame() {
-      currentRound = 1;
-      userWins = 0;
-      dealerWins = 0;
-      document.getElementById('final-banner').classList.add('hidden');
-      document.getElementById('btn-reset').style.display = 'none';
-      startRound();
-    }
-
-    // Iniciar juego
-    startRound();
-  </script>
 </body>
 </html>

@@ -376,25 +376,26 @@
       startRound();
     }
 
-    function checkGameOver() {
-      const banner = document.getElementById('final-banner');
-      const message = document.getElementById('final-message');
-
-      banner.classList.remove('hidden', 'win', 'lose', 'draw');
-
-      if (userWins > dealerWins) {
-        message.textContent = '🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉';
-        banner.classList.add('win');
-      } else if (userWins < dealerWins) {
-        message.textContent = '❌ ¡HAS PERDIDO LA PARTIDA! ❌';
-        banner.classList.add('lose');
-      } else {
-        message.textContent = '🤝 ¡EMPATE TÉCNICO! 🤝';
-        banner.classList.add('draw');
-      }
-
-      document.getElementById('btn-reset').style.display = 'inline-block';
+// CAMBIO 2: Inyectar el mensaje DENTRO del cuadro/contenedor existente
+function checkGameOver() {
+    if (currentRound > TOTAL_ROUNDS) {
+        // Usa el ID del contenedor de texto/mensajes que ya tiene tu interfaz bonita
+        const statusContainer = document.getElementById('mensaje') || document.getElementById('game-message') || document.getElementById('status'); 
+        
+        if (userWins > dealerWins) {
+            statusContainer.innerHTML = '🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉';
+            statusContainer.className = 'win-message'; // O la clase de estilo que ya tengas
+        } else if (userWins < dealerWins) {
+            statusContainer.innerHTML = '❌ ¡HAS PERDIDO LA PARTIDA! ❌';
+            statusContainer.className = 'lose-message';
+        } else {
+            statusContainer.innerHTML = '🤝 ¡EMPATE TÉCNICO! 🤝';
+        }
+        
+        // Deshabilitar botones de juego
+        disableButtons(); 
     }
+}
 
     function resetGame() {
       currentRound = 1;

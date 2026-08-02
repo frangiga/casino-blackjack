@@ -347,7 +347,7 @@
       matchWinMsg: "HAI VINTO LA PARTITA!",
       matchLoseMsg: "Il banco ha raggiunto 10 vittorie. Hai perso!",
       rewardTitle: "🎉 CONGRATULAZIONI! HAI VINTO! 🎉",
-      rewardSub: "La chiave per il certitude é:"
+      rewardSub: "La chiave per il certitude è:"
     }
   };
 
@@ -391,7 +391,7 @@
     return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
   }
 
-  // Cálculo dinámico de puntuación ajustando Ases (11 a 1 si se pasa de 21)
+  // CÁLCULO DINÁMICO REVISADO: Convierte Ases (11 a 1) si se pasa de 21
   function calculateScore(cards) {
     var score = 0;
     var aces = 0;
@@ -460,10 +460,11 @@
     playerCards.push(card);
     appendCardToHTML('player-cards', card);
 
-    var playerScore = calculateScore(playerCards);
-    document.getElementById('player-score').innerText = playerScore;
+    // Recalcular la mano con la regla dinámica del As
+    var currentScore = calculateScore(playerCards);
+    document.getElementById('player-score').innerText = currentScore;
 
-    if (playerScore > 21) {
+    if (currentScore > 21) {
       document.getElementById('status-msg').innerText = t.bustMsg;
       endRound(false);
     }

@@ -141,22 +141,25 @@
     button.game-btn:hover { background: #ffca28; }
     button.game-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
 
-    /* Estándar Firma a Pie de Página */
+    /* Estándar Firma a Pie de Página - Centrado equilibrado */
     footer {
       width: 100%;
-      max-width: 480px;
+      max-width: 320px;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
-      padding: 5px 5px 2px 5px;
+      padding: 5px 0 2px 0;
       font-size: 0.8em;
       box-sizing: border-box;
+      margin: 0 auto;
     }
 
     footer a {
       color: #888;
       text-decoration: none;
       transition: color 0.2s ease;
+      text-align: center;
+      flex: 1;
     }
 
     footer a:hover {
@@ -218,7 +221,7 @@
   </div>
 </div>
 
-<!-- Pie de página con firma -->
+<!-- Pie de página con firma centrada -->
 <footer>
   <a href="https://www.geocaching.com/plan/lists/BMFC2Z7" target="_blank" rel="noopener noreferrer">GeoPaterna</a>
   <a href="https://www.geocaching.com/p/?guid=8aa34b6e-769c-42e2-ab66-4163f9a40e13&wid=9b106a24-4eef-41ab-8a06-c207d4143cb1&ds=2" target="_blank" rel="noopener noreferrer">fran_giga</a>
@@ -391,7 +394,6 @@
     return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
   }
 
-  // CÁLCULO DINÁMICO REVISADO: Convierte Ases (11 a 1) si se pasa de 21
   function calculateScore(cards) {
     var score = 0;
     var aces = 0;
@@ -460,7 +462,6 @@
     playerCards.push(card);
     appendCardToHTML('player-cards', card);
 
-    // Recalcular la mano con la regla dinámica del As
     var currentScore = calculateScore(playerCards);
     document.getElementById('player-score').innerText = currentScore;
 

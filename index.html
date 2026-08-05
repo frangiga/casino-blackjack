@@ -1,172 +1,213 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Casino Blackjack - fran_giga</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden; /* Cero scroll estricto */
-      background: #0a1f0a;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Casino Blackjack - fran_giga</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Cero scroll estricto */
+  background: #0a1f0a;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px 10px 5px 10px;
+}
+/* Pantalla Inicial: Selector de Idioma Internacional */
+#lang-select-screen {
+  background: #0f380f;
+  padding: 20px 15px;
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  border: 1px solid #1b5e20;
+  box-sizing: border-box;
+  margin: auto 0;
+}
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+.lang-btn {
+  padding: 10px 5px;
+  background: #1b5e20;
+  color: #fff;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-size: 0.95em;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.lang-btn:hover {
+  background: #ffd700;
+  color: #000;
+}
+/* Consola Principal del Juego */
+#blackjack-console {
+  display: none; /* Oculto hasta elegir idioma */
+  background: #0f380f;
+  padding: 15px;
+  border-radius: 12px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  border: 1px solid #1b5e20;
+  box-sizing: border-box;
+  margin: auto 0;
+}
+.series-tracker {
+  background: #082108;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #2e7d32;
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+}
+.score-badge {
+  color: #ffd700;
+  font-size: 1.1em;
+}
+.game-board { 
+  display: flex; 
+  justify-content: space-around; 
+  margin: 10px 0; 
+  gap: 10px; 
+}
+/* Tapetes con marco amarillo/dorado */
+.hand { 
+  background: #1b5e20; 
+  padding: 8px; 
+  border-radius: 8px; 
+  width: 45%; 
+  min-height: 95px; 
+  border: 2px solid #ffd700; 
+  box-sizing: border-box;
+}
+.card-item {
+  display: inline-block;
+  background: #ffffff;
+  padding: 4px 6px;
+  margin: 2px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9em;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+button.game-btn {
+  padding: 8px 14px;
+  margin: 4px;
+  background: #ffd700;
+  color: #000;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+button.game-btn:hover { background: #ffca28; }
+button.game-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      box-sizing: border-box;
-      padding: 10px 10px 5px 10px;
-    }
+/* Ventana Emergente (Modal) */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.modal-content {
+  background: #0f380f;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+.modal-key-box {
+  background: #1b3e1b;
+  border: 1px dashed #ffd700;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 6px;
+  font-size: 1.2em;
+  color: #ffd700;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+.modal-btn {
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.9em;
+}
+.btn-copy { background: #2e7d32; color: #fff; }
+.btn-copy:hover { background: #388e3c; }
+.btn-certitude { background: #1976d2; color: #fff; }
+.btn-certitude:hover { background: #1e88e5; }
+.btn-close { background: #555; color: #fff; }
+.btn-close:hover { background: #666; }
 
-    /* Pantalla Inicial: Selector de Idioma Internacional */
-    #lang-select-screen {
-      background: #0f380f;
-      padding: 20px 15px;
-      border-radius: 12px;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      border: 1px solid #1b5e20;
-      box-sizing: border-box;
-      margin: auto 0;
-    }
-
-    .lang-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .lang-btn {
-      padding: 10px 5px;
-      background: #1b5e20;
-      color: #fff;
-      border: 2px solid #ffd700;
-      border-radius: 8px;
-      font-size: 0.95em;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .lang-btn:hover {
-      background: #ffd700;
-      color: #000;
-    }
-
-    /* Consola Principal del Juego */
-    #blackjack-console {
-      display: none; /* Oculto hasta elegir idioma */
-      background: #0f380f;
-      padding: 15px;
-      border-radius: 12px;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      border: 1px solid #1b5e20;
-      box-sizing: border-box;
-      margin: auto 0;
-    }
-
-    .series-tracker {
-      background: #082108;
-      padding: 8px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      border: 1px solid #2e7d32;
-      display: flex;
-      justify-content: space-around;
-      font-weight: bold;
-    }
-
-    .score-badge {
-      color: #ffd700;
-      font-size: 1.1em;
-    }
-
-    .game-board { 
-      display: flex; 
-      justify-content: space-around; 
-      margin: 10px 0; 
-      gap: 10px; 
-    }
-
-    /* Tapetes con marco amarillo/dorado */
-    .hand { 
-      background: #1b5e20; 
-      padding: 8px; 
-      border-radius: 8px; 
-      width: 45%; 
-      min-height: 95px; 
-      border: 2px solid #ffd700; 
-      box-sizing: border-box;
-    }
-
-    .card-item {
-      display: inline-block;
-      background: #ffffff;
-      padding: 4px 6px;
-      margin: 2px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.9em;
-      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    }
-
-    button.game-btn {
-      padding: 8px 14px;
-      margin: 4px;
-      background: #ffd700;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 0.9em;
-    }
-
-    button.game-btn:hover { background: #ffca28; }
-    button.game-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
-
-    /* Estándar Firma a Pie de Página - Centrado equilibrado */
-    footer {
-      width: 100%;
-      max-width: 320px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 5px 0 2px 0;
-      font-size: 0.8em;
-      box-sizing: border-box;
-      margin: 0 auto;
-    }
-
-    footer a {
-      color: #888;
-      text-decoration: none;
-      transition: color 0.2s ease;
-      text-align: center;
-      flex: 1;
-    }
-
-    footer a:hover {
-      color: #ffd700;
-      text-decoration: underline;
-    }
-  </style>
+/* Estándar Firma a Pie de Página */
+footer {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 5px 2px 5px;
+  font-size: 0.8em;
+  box-sizing: border-box;
+}
+footer a {
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+footer a:hover {
+  color: #ffd700;
+  text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -194,7 +235,7 @@
   </div>
 
   <p id="status-msg" style="color: #ffd700; font-weight: bold; margin: 8px 0; font-size: 0.9em;"></p>
-  
+
   <div class="game-board">
     <div class="hand">
       <h3 style="margin:0 0 6px 0; font-size:0.9em;"><span id="lbl-hand-dealer">Banca</span>: <span id="dealer-score">0</span></h3>
@@ -212,321 +253,344 @@
     <button id="btn-next-round" class="game-btn" onclick="startNewRound()" style="display:none; background:#ff9800; color:#fff;"></button>
     <button id="btn-reset-match" class="game-btn" onclick="resetMatch()" style="display:none; background:#d32f2f; color:#fff;"></button>
   </div>
+</div>
 
-  <!-- Premio final (1 sola línea) -->
-  <div id="final-reward" style="display:none; margin-top:12px; padding:10px; border:2px solid #2e7d32; background:#1b3e1b; border-radius:8px;">
-    <h3 id="reward-title" style="color:#4caf50; margin-top:0; margin-bottom:4px; font-size: clamp(0.7rem, 3.2vw, 0.95rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></h3>
-    <p id="reward-sub" style="margin:3px 0; font-size:0.85em;"></p>
-    <p style="font-size:1.1em; color:#ffd700; margin:0;"><strong>HAGAN-JUEGO-777</strong></p>
+<!-- VENTANA EMERGENTE (MODAL PREMIO) -->
+<div id="win-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 id="modal-title" style="color:#ffd700; margin-top:0; margin-bottom:8px;"></h3>
+    <p id="modal-sub" style="margin:5px 0; font-size:0.9em; color:#ddd;"></p>
+    
+    <div class="modal-key-box" id="key-text">HAGAN-JUEGO-777</div>
+
+    <div class="modal-actions">
+      <button id="btn-copy-key" class="modal-btn btn-copy" onclick="copyKey()"></button>
+      <a id="btn-certitude-link" href="https://www.certitudes.org/certitude?wp=GCBVFN3" target="_blank" rel="noopener noreferrer" class="modal-btn btn-certitude">
+        IR AL CERTITUDE
+      </a>
+      <button id="btn-close-modal" class="modal-btn btn-close" onclick="closeModal()"></button>
+    </div>
   </div>
 </div>
 
-<!-- Pie de página con firma centrada -->
+<!-- Pie de página con firma -->
 <footer>
   <a href="https://www.geocaching.com/plan/lists/BMFC2Z7" target="_blank" rel="noopener noreferrer">GeoPaterna</a>
   <a href="https://www.geocaching.com/p/?guid=8aa34b6e-769c-42e2-ab66-4163f9a40e13&wid=9b106a24-4eef-41ab-8a06-c207d4143cb1&ds=2" target="_blank" rel="noopener noreferrer">fran_giga</a>
 </footer>
 
 <script>
-  var TARGET_WINS = 10;
-  var playerCards = [];
-  var dealerCards = [];
-  var playerWins = 0;
-  var dealerWins = 0;
-  var roundOver = false;
-  var currentLang = 'es';
+var TARGET_WINS = 10;
+var playerScore = 0;
+var dealerScore = 0;
+var playerWins = 0;
+var dealerWins = 0;
+var roundOver = false;
+var currentLang = 'es';
 
-  // Diccionario multilenguaje (6 idiomas)
-  var i18n = {
-    es: {
-      dealer: "Banca",
-      player: "Jugador",
-      yourHand: "Tu Mano",
-      btnHit: "Pedir Carta",
-      btnStand: "Plantarse",
-      btnNext: "Siguiente Mano",
-      btnReset: "Reiniciar Partida",
-      playMsg: "¡Haz tu jugada!",
-      bustMsg: "¡Te pasaste de 21! Punto para la banca.",
-      dealerBustMsg: "¡La banca se pasó de 21! Punto para ti.",
-      playerBeatMsg: "¡Tu mano supera a la banca! Punto para ti.",
-      tieMsg: "Empate. Punto para la banca.",
-      dealerWinHandMsg: "La banca gana la mano con ",
-      matchWinMsg: "¡HAS GANADO LA PARTIDA!",
-      matchLoseMsg: "La banca ha alcanzado 10 victorias. ¡Has perdido!",
-      rewardTitle: "🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉",
-      rewardSub: "La clave para el certitude es:"
-    },
-    en: {
-      dealer: "Dealer",
-      player: "Player",
-      yourHand: "Your Hand",
-      btnHit: "Hit",
-      btnStand: "Stand",
-      btnNext: "Next Hand",
-      btnReset: "Reset Game",
-      playMsg: "Make your move!",
-      bustMsg: "Bust! Over 21. Point for the dealer.",
-      dealerBustMsg: "Dealer bust! Point for you.",
-      playerBeatMsg: "You beat the dealer! Point for you.",
-      tieMsg: "Tie. Point for the dealer.",
-      dealerWinHandMsg: "Dealer wins the hand with ",
-      matchWinMsg: "YOU WON THE MATCH!",
-      matchLoseMsg: "Dealer reached 10 wins. You lost!",
-      rewardTitle: "🎉 CONGRATULATIONS! YOU WON! 🎉",
-      rewardSub: "The certitude key is:"
-    },
-    fr: {
-      dealer: "Croupier",
-      player: "Joueur",
-      yourHand: "Votre Main",
-      btnHit: "Carte",
-      btnStand: "Reste",
-      btnNext: "Main Suivante",
-      btnReset: "Recommencer",
-      playMsg: "À vous de jouer !",
-      bustMsg: "Dépassé 21 ! Point pour le croupier.",
-      dealerBustMsg: "Le croupier a sauté ! Point pour vous.",
-      playerBeatMsg: "Vous battez le croupier ! Point pour vous.",
-      tieMsg: "Égalité. Point pour le croupier.",
-      dealerWinHandMsg: "Le croupier gagne la main avec ",
-      matchWinMsg: "VOUS AVEZ GAGNÉ LA PARTIE !",
-      matchLoseMsg: "Le croupier a 10 victoires. Vous avez perdu !",
-      rewardTitle: "🎉 FÉLICITATIONS ! VOUS AVEZ GAGNÉ ! 🎉",
-      rewardSub: "La clé pour le certitude est :"
-    },
-    pt: {
-      dealer: "Banca",
-      player: "Jogador",
-      yourHand: "Sua Mão",
-      btnHit: "Pedir Carta",
-      btnStand: "Parar",
-      btnNext: "Próxima Mão",
-      btnReset: "Reiniciar Jogo",
-      playMsg: "Faça a sua jogada!",
-      bustMsg: "Estourou 21! Ponto para a banca.",
-      dealerBustMsg: "A banca estourou! Ponto para você.",
-      playerBeatMsg: "Você venceu a banca! Ponto para você.",
-      tieMsg: "Empate. Ponto para a banca.",
-      dealerWinHandMsg: "A banca venceu a mão com ",
-      matchWinMsg: "VOCÊ VENCEU O JOGO!",
-      matchLoseMsg: "A banca atingiu 10 vitórias. Você perdeu!",
-      rewardTitle: "🎉 PARABÉNS! VOCÊ VENCEU! 🎉",
-      rewardSub: "A chave para o certitude é:"
-    },
-    de: {
-      dealer: "Bank",
-      player: "Spieler",
-      yourHand: "Deine Hand",
-      btnHit: "Karte",
-      btnStand: "Passen",
-      btnNext: "Nächste Hand",
-      btnReset: "Spiel Neustarten",
-      playMsg: "Du bist am Zug!",
-      bustMsg: "Über 21! Punkt für die Bank.",
-      dealerBustMsg: "Bank hat überkauft! Punkt für dich.",
-      playerBeatMsg: "Du schlägst die Bank! Punkt für dich.",
-      tieMsg: "Unentschieden. Punkt für die Bank.",
-      dealerWinHandMsg: "Die Bank gewinnt die Hand mit ",
-      matchWinMsg: "DU HAST GEWONNEN!",
-      matchLoseMsg: "Die Bank hat 10 Siege erreicht. Verloren!",
-      rewardTitle: "🎉 HERZLICHEN GLÜCKWUNSCH! GEWONNEN! 🎉",
-      rewardSub: "Der Schlüssel für Certitude ist:"
-    },
-    it: {
-      dealer: "Banco",
-      player: "Giocatore",
-      yourHand: "La tua Mano",
-      btnHit: "Carta",
-      btnStand: "Stai",
-      btnNext: "Prossima Mano",
-      btnReset: "Ricomincia",
-      playMsg: "Fai la tua mossa!",
-      bustMsg: "Hai superato 21! Punto al banco.",
-      dealerBustMsg: "Il banco ha sballato! Punto per te.",
-      playerBeatMsg: "Hai battuto il banco! Punto per te.",
-      tieMsg: "Pareggio. Punto al banco.",
-      dealerWinHandMsg: "Il banco vince la mano con ",
-      matchWinMsg: "HAI VINTO LA PARTITA!",
-      matchLoseMsg: "Il banco ha raggiunto 10 vittorie. Hai perso!",
-      rewardTitle: "🎉 CONGRATULAZIONI! HAI VINTO! 🎉",
-      rewardSub: "La chiave per il certitude è:"
-    }
-  };
-
-  var suits = [
-    { symbol: '♠', color: '#111111' },
-    { symbol: '♣', color: '#111111' },
-    { symbol: '♥', color: '#d32f2f' },
-    { symbol: '♦', color: '#d32f2f' }
-  ];
-
-  var cardDeck = [
-    { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
-    { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
-    { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
-    { name: 'J', value: 10 }, { name: 'Q', value: 10 }, { name: 'K', value: 10 }, { name: 'A', value: 11 }
-  ];
-
-  function selectLanguage(lang) {
-    currentLang = lang;
-    document.getElementById('lang-select-screen').style.display = 'none';
-    document.getElementById('blackjack-console').style.display = 'block';
-
-    var t = i18n[currentLang];
-    document.getElementById('lbl-dealer').innerText = t.dealer;
-    document.getElementById('lbl-player').innerText = t.player;
-    document.getElementById('lbl-hand-dealer').innerText = t.dealer;
-    document.getElementById('lbl-hand-player').innerText = t.yourHand;
-    document.getElementById('btn-hit').innerText = t.btnHit;
-    document.getElementById('btn-stand').innerText = t.btnStand;
-    document.getElementById('btn-next-round').innerText = t.btnNext;
-    document.getElementById('btn-reset-match').innerText = t.btnReset;
-    document.getElementById('reward-title').innerText = t.rewardTitle;
-    document.getElementById('reward-sub').innerText = t.rewardSub;
-
-    resetMatch();
+// Diccionario multilenguaje (6 idiomas)
+var i18n = {
+  es: {
+    dealer: "Banca",
+    player: "Jugador",
+    yourHand: "Tu Mano",
+    btnHit: "Pedir Carta",
+    btnStand: "Plantarse",
+    btnNext: "Siguiente Mano",
+    btnReset: "Reiniciar Partida",
+    playMsg: "¡Haz tu jugada!",
+    bustMsg: "¡Te pasaste de 21! Punto para la banca.",
+    dealerBustMsg: "¡La banca se pasó de 21! Punto para ti.",
+    playerBeatMsg: "¡Tu mano supera a la banca! Punto para ti.",
+    tieMsg: "Empate. Punto para la banca.",
+    dealerWinHandMsg: "La banca gana la mano con ",
+    matchWinMsg: "¡HAS GANADO LA PARTIDA!",
+    matchLoseMsg: "La banca ha alcanzado 10 victorias. ¡Has perdido!",
+    rewardTitle: "🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉",
+    rewardSub: "La clave para el certitude es:",
+    btnCopy: "📋 Copiar Clave",
+    copied: "¡Copiada!",
+    btnClose: "Cerrar"
+  },
+  en: {
+    dealer: "Dealer",
+    player: "Player",
+    yourHand: "Your Hand",
+    btnHit: "Hit",
+    btnStand: "Stand",
+    btnNext: "Next Hand",
+    btnReset: "Reset Game",
+    playMsg: "Make your move!",
+    bustMsg: "Bust! Over 21. Point for the dealer.",
+    dealerBustMsg: "Dealer bust! Point for you.",
+    playerBeatMsg: "You beat the dealer! Point for you.",
+    tieMsg: "Tie. Point for the dealer.",
+    dealerWinHandMsg: "Dealer wins the hand with ",
+    matchWinMsg: "YOU WON THE MATCH!",
+    matchLoseMsg: "Dealer reached 10 wins. You lost!",
+    rewardTitle: "🎉 CONGRATULATIONS! YOU WON! 🎉",
+    rewardSub: "The certitude key is:",
+    btnCopy: "📋 Copy Key",
+    copied: "Copied!",
+    btnClose: "Close"
+  },
+  fr: {
+    dealer: "Croupier",
+    player: "Joueur",
+    yourHand: "Votre Main",
+    btnHit: "Carte",
+    btnStand: "Reste",
+    btnNext: "Main Suivante",
+    btnReset: "Recommencer",
+    playMsg: "À vous de jouer !",
+    bustMsg: "Dépassé 21 ! Point pour le croupier.",
+    dealerBustMsg: "Le croupier a sauté ! Point pour vous.",
+    playerBeatMsg: "Vous battez le croupier ! Point pour vous.",
+    tieMsg: "Égalité. Point pour le croupier.",
+    dealerWinHandMsg: "Le croupier gagne la main avec ",
+    matchWinMsg: "VOUS AVEZ GAGNÉ LA PARTIE !",
+    matchLoseMsg: "Le croupier a 10 victoires. Vous avez perdu !",
+    rewardTitle: "🎉 FÉLICITATIONS ! VOUS AVEZ GAGNÉ ! 🎉",
+    rewardSub: "La clé pour le certitude est :",
+    btnCopy: "📋 Copier la Clé",
+    copied: "Copié !",
+    btnClose: "Fermer"
+  },
+  pt: {
+    dealer: "Banca",
+    player: "Jogador",
+    yourHand: "Sua Mão",
+    btnHit: "Pedir Carta",
+    btnStand: "Parar",
+    btnNext: "Próxima Mão",
+    btnReset: "Reiniciar Jogo",
+    playMsg: "Faça a sua jogada!",
+    bustMsg: "Estourou 21! Ponto para a banca.",
+    dealerBustMsg: "A banca estourou! Ponto para você.",
+    playerBeatMsg: "Você venceu a banca! Ponto para você.",
+    tieMsg: "Empate. Ponto para a banca.",
+    dealerWinHandMsg: "A banca venceu a mão com ",
+    matchWinMsg: "VOCÊ VENCEU O JOGO!",
+    matchLoseMsg: "A banca atingiu 10 vitórias. Você perdeu!",
+    rewardTitle: "🎉 PARABÉNS! VOCÊ VENCEU! 🎉",
+    rewardSub: "A chave para o certitude é:",
+    btnCopy: "📋 Copiar Chave",
+    copied: "Copiado!",
+    btnClose: "Fechar"
+  },
+  de: {
+    dealer: "Bank",
+    player: "Spieler",
+    yourHand: "Deine Hand",
+    btnHit: "Karte",
+    btnStand: "Passen",
+    btnNext: "Nächste Hand",
+    btnReset: "Spiel Neustarten",
+    playMsg: "Du bist am Zug!",
+    bustMsg: "Über 21! Punkt für die Bank.",
+    dealerBustMsg: "Bank hat überkauft! Punkt für dich.",
+    playerBeatMsg: "Du schlägst die Bank! Punkt für dich.",
+    tieMsg: "Unentschieden. Punkt für die Bank.",
+    dealerWinHandMsg: "Die Bank gewinnt die Hand mit ",
+    matchWinMsg: "DU HAST GEWONNEN!",
+    matchLoseMsg: "Die Bank hat 10 Siege erreicht. Verloren!",
+    rewardTitle: "🎉 HERZLICHEN GLÜCKWUNSCH! GEWONNEN! 🎉",
+    rewardSub: "Der Schlüssel für Certitude ist:",
+    btnCopy: "📋 Schlüssel Kopieren",
+    copied: "Kopiert!",
+    btnClose: "Schließen"
+  },
+  it: {
+    dealer: "Banco",
+    player: "Giocatore",
+    yourHand: "La tua Mano",
+    btnHit: "Carta",
+    btnStand: "Stai",
+    btnNext: "Prossima Mano",
+    btnReset: "Ricomincia",
+    playMsg: "Fai la tua mossa!",
+    bustMsg: "Hai superato 21! Punto al banco.",
+    dealerBustMsg: "Il banco ha sballato! Punto per te.",
+    playerBeatMsg: "Hai battuto il banco! Punto per te.",
+    tieMsg: "Pareggio. Punto al banco.",
+    dealerWinHandMsg: "Il banco vince la mano con ",
+    matchWinMsg: "HAI VINTO LA PARTITA!",
+    matchLoseMsg: "Il banco ha raggiunto 10 vittorie. Hai perso!",
+    rewardTitle: "🎉 CONGRATULAZIONI! HAI VINTO! 🎉",
+    rewardSub: "La chiave per il certitude è:",
+    btnCopy: "📋 Copia Chiave",
+    copied: "Copiato!",
+    btnClose: "Chiudi"
   }
+};
 
-  function getRandomCard() {
-    var randomCard = cardDeck[Math.floor(Math.random() * cardDeck.length)];
-    var randomSuit = suits[Math.floor(Math.random() * suits.length)];
-    return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
+var suits = [
+  { symbol: '♠', color: '#111111' },
+  { symbol: '♣', color: '#111111' },
+  { symbol: '♥', color: '#d32f2f' },
+  { symbol: '♦', color: '#d32f2f' }
+];
+
+var cardDeck = [
+  { name: '2', value: 2 }, { name: '3', value: 3 }, { name: '4', value: 4 },
+  { name: '5', value: 5 }, { name: '6', value: 6 }, { name: '7', value: 7 },
+  { name: '8', value: 8 }, { name: '9', value: 9 }, { name: '10', value: 10 },
+  { name: 'J', value: 10 }, { name: 'Q', value: 10 }, { name: 'K', value: 10 },
+  { name: 'A', value: 11 }
+];
+
+function selectLanguage(lang) {
+  currentLang = lang;
+  document.getElementById('lang-select-screen').style.display = 'none';
+  document.getElementById('blackjack-console').style.display = 'block';
+  
+  var t = i18n[currentLang];
+  document.getElementById('lbl-dealer').innerText = t.dealer;
+  document.getElementById('lbl-player').innerText = t.player;
+  document.getElementById('lbl-hand-dealer').innerText = t.dealer;
+  document.getElementById('lbl-hand-player').innerText = t.yourHand;
+  document.getElementById('btn-hit').innerText = t.btnHit;
+  document.getElementById('btn-stand').innerText = t.btnStand;
+  document.getElementById('btn-next-round').innerText = t.btnNext;
+  document.getElementById('btn-reset-match').innerText = t.btnReset;
+  
+  document.getElementById('modal-title').innerText = t.rewardTitle;
+  document.getElementById('modal-sub').innerText = t.rewardSub;
+  document.getElementById('btn-copy-key').innerText = t.btnCopy;
+  document.getElementById('btn-close-modal').innerText = t.btnClose;
+
+  resetMatch();
+}
+
+function getRandomCard() {
+  var randomCard = cardDeck[Math.floor(Math.random() * cardDeck.length)];
+  var randomSuit = suits[Math.floor(Math.random() * suits.length)];
+  return { name: randomCard.name, value: randomCard.value, suit: randomSuit.symbol, color: randomSuit.color };
+}
+
+function appendCardToHTML(containerId, card) {
+  var container = document.getElementById(containerId);
+  var cardSpan = document.createElement('span');
+  cardSpan.className = 'card-item';
+  cardSpan.style.color = card.color;
+  cardSpan.innerText = card.name + card.suit;
+  container.appendChild(cardSpan);
+}
+
+function updateScoreboard() {
+  document.getElementById('player-wins').innerText = playerWins + '/' + TARGET_WINS;
+  document.getElementById('dealer-wins').innerText = dealerWins + '/' + TARGET_WINS;
+}
+
+function resetMatch() {
+  playerWins = 0;
+  dealerWins = 0;
+  updateScoreboard();
+  closeModal();
+  document.getElementById('btn-reset-match').style.display = 'none';
+  startNewRound();
+}
+
+function startNewRound() {
+  var t = i18n[currentLang];
+  playerScore = 0;
+  dealerScore = 0;
+  roundOver = false;
+  
+  document.getElementById('player-cards').innerHTML = '';
+  document.getElementById('dealer-cards').innerHTML = '';
+  document.getElementById('player-score').innerText = '0';
+  document.getElementById('dealer-score').innerText = '0';
+  document.getElementById('btn-hit').disabled = false;
+  document.getElementById('btn-stand').disabled = false;
+  document.getElementById('btn-next-round').style.display = 'none';
+  document.getElementById('status-msg').innerText = t.playMsg;
+  
+  drawCard();
+}
+
+function drawCard() {
+  if (roundOver) return;
+  var t = i18n[currentLang];
+  var card = getRandomCard();
+  playerScore += card.value;
+  appendCardToHTML('player-cards', card);
+  document.getElementById('player-score').innerText = playerScore;
+  
+  if (playerScore > 21) {
+    document.getElementById('status-msg').innerText = t.bustMsg;
+    endRound(false);
   }
+}
 
-  function calculateScore(cards) {
-    var score = 0;
-    var aces = 0;
-
-    for (var i = 0; i < cards.length; i++) {
-      score += cards[i].value;
-      if (cards[i].name === 'A') {
-        aces++;
-      }
-    }
-
-    while (score > 21 && aces > 0) {
-      score -= 10;
-      aces--;
-    }
-
-    return score;
-  }
-
-  function appendCardToHTML(containerId, card) {
-    var container = document.getElementById(containerId);
-    var cardSpan = document.createElement('span');
-    cardSpan.className = 'card-item';
-    cardSpan.style.color = card.color;
-    cardSpan.innerText = card.name + card.suit;
-    container.appendChild(cardSpan);
-  }
-
-  function updateScoreboard() {
-    document.getElementById('player-wins').innerText = playerWins + '/' + TARGET_WINS;
-    document.getElementById('dealer-wins').innerText = dealerWins + '/' + TARGET_WINS;
-  }
-
-  function resetMatch() {
-    playerWins = 0;
-    dealerWins = 0;
-    updateScoreboard();
-    document.getElementById('final-reward').style.display = 'none';
-    document.getElementById('btn-reset-match').style.display = 'none';
-    startNewRound();
-  }
-
-  function startNewRound() {
-    var t = i18n[currentLang];
-    playerCards = [];
-    dealerCards = [];
-    roundOver = false;
-
-    document.getElementById('player-cards').innerHTML = '';
-    document.getElementById('dealer-cards').innerHTML = '';
-    document.getElementById('player-score').innerText = '0';
-    document.getElementById('dealer-score').innerText = '0';
-    
-    document.getElementById('btn-hit').disabled = false;
-    document.getElementById('btn-stand').disabled = false;
-    document.getElementById('btn-next-round').style.display = 'none';
-    document.getElementById('status-msg').innerText = t.playMsg;
-
-    drawCard();
-  }
-
-  function drawCard() {
-    if (roundOver) return;
-    var t = i18n[currentLang];
+function stand() {
+  if (roundOver) return;
+  var t = i18n[currentLang];
+  
+  while (dealerScore < 17) {
     var card = getRandomCard();
-    playerCards.push(card);
-    appendCardToHTML('player-cards', card);
-
-    var currentScore = calculateScore(playerCards);
-    document.getElementById('player-score').innerText = currentScore;
-
-    if (currentScore > 21) {
-      document.getElementById('status-msg').innerText = t.bustMsg;
-      endRound(false);
-    }
+    dealerScore += card.value;
+    appendCardToHTML('dealer-cards', card);
   }
-
-  function stand() {
-    if (roundOver) return;
-    var t = i18n[currentLang];
-
-    var playerScore = calculateScore(playerCards);
-    var dealerScore = calculateScore(dealerCards);
-
-    while (dealerScore < 17) {
-      var card = getRandomCard();
-      dealerCards.push(card);
-      appendCardToHTML('dealer-cards', card);
-      dealerScore = calculateScore(dealerCards);
-    }
-
-    document.getElementById('dealer-score').innerText = dealerScore;
-
-    if (dealerScore > 21) {
-      document.getElementById('status-msg').innerText = t.dealerBustMsg;
-      endRound(true);
-    } else if (playerScore > dealerScore) {
-      document.getElementById('status-msg').innerText = t.playerBeatMsg;
-      endRound(true);
-    } else if (playerScore === dealerScore) {
-      document.getElementById('status-msg').innerText = t.tieMsg;
-      endRound(false);
-    } else {
-      document.getElementById('status-msg').innerText = t.dealerWinHandMsg + dealerScore + '.';
-      endRound(false);
-    }
+  
+  document.getElementById('dealer-score').innerText = dealerScore;
+  
+  if (dealerScore > 21) {
+    document.getElementById('status-msg').innerText = t.dealerBustMsg;
+    endRound(true);
+  } else if (playerScore > dealerScore) {
+    document.getElementById('status-msg').innerText = t.playerBeatMsg;
+    endRound(true);
+  } else if (playerScore === dealerScore) {
+    document.getElementById('status-msg').innerText = t.tieMsg;
+    endRound(false);
+  } else {
+    document.getElementById('status-msg').innerText = t.dealerWinHandMsg + dealerScore + '.';
+    endRound(false);
   }
+}
 
-  function endRound(playerWonRound) {
-    var t = i18n[currentLang];
-    roundOver = true;
-    document.getElementById('btn-hit').disabled = true;
-    document.getElementById('btn-stand').disabled = true;
-
-    if (playerWonRound) {
-      playerWins++;
-    } else {
-      dealerWins++;
-    }
-
-    updateScoreboard();
-
-    if (playerWins === TARGET_WINS) {
-      document.getElementById('status-msg').innerText = t.matchWinMsg;
-      document.getElementById('final-reward').style.display = 'block';
-    } else if (dealerWins === TARGET_WINS) {
-      document.getElementById('status-msg').innerText = t.matchLoseMsg;
-      document.getElementById('btn-reset-match').style.display = 'inline-block';
-    } else {
-      document.getElementById('btn-next-round').style.display = 'inline-block';
-    }
+function endRound(playerWonRound) {
+  var t = i18n[currentLang];
+  roundOver = true;
+  document.getElementById('btn-hit').disabled = true;
+  document.getElementById('btn-stand').disabled = true;
+  
+  if (playerWonRound) {
+    playerWins++;
+  } else {
+    dealerWins++;
   }
+  
+  updateScoreboard();
+  
+  if (playerWins === TARGET_WINS) {
+    document.getElementById('status-msg').innerText = t.matchWinMsg;
+    document.getElementById('win-modal').style.display = 'flex';
+    document.getElementById('btn-reset-match').style.display = 'inline-block';
+  } else if (dealerWins === TARGET_WINS) {
+    document.getElementById('status-msg').innerText = t.matchLoseMsg;
+    document.getElementById('btn-reset-match').style.display = 'inline-block';
+  } else {
+    document.getElementById('btn-next-round').style.display = 'inline-block';
+  }
+}
+
+function copyKey() {
+  var keyText = document.getElementById('key-text').innerText;
+  var t = i18n[currentLang];
+  navigator.clipboard.writeText(keyText).then(function() {
+    var btn = document.getElementById('btn-copy-key');
+    btn.innerText = t.copied;
+    setTimeout(function() {
+      btn.innerText = t.btnCopy;
+    }, 2000);
+  });
+}
+
+function closeModal() {
+  document.getElementById('win-modal').style.display = 'none';
+}
 </script>
-
 </body>
 </html>

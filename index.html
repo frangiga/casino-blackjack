@@ -230,8 +230,8 @@ footer a:hover {
   <h2 style="margin-top:0; margin-bottom:10px; font-size:1.3em;">♠️ Casino Blackjack ♣️</h2>
   
   <div class="series-tracker">
-    <div><span id="lbl-dealer">Banca</span>: <span id="dealer-wins" class="score-badge">0/1</span></div>
-    <div><span id="lbl-player">Jugador</span>: <span id="player-wins" class="score-badge">0/1</span></div>
+    <div><span id="lbl-dealer">Banca</span>: <span id="dealer-wins" class="score-badge">0/10</span></div>
+    <div><span id="lbl-player">Jugador</span>: <span id="player-wins" class="score-badge">0/10</span></div>
   </div>
 
   <p id="status-msg" style="color: #ffd700; font-weight: bold; margin: 8px 0; font-size: 0.9em;"></p>
@@ -280,7 +280,7 @@ footer a:hover {
 </footer>
 
 <script>
-var TARGET_WINS = 1; // Cambiado a 1 para hacer pruebas rápidas
+var TARGET_WINS = 10;
 var playerScore = 0;
 var dealerScore = 0;
 var playerWins = 0;
@@ -305,7 +305,7 @@ var i18n = {
     tieMsg: "Empate. Punto para la banca.",
     dealerWinHandMsg: "La banca gana la mano con ",
     matchWinMsg: "¡HAS GANADO LA PARTIDA!",
-    matchLoseMsg: "La banca ha alcanzado 1 victoria. ¡Has perdido!",
+    matchLoseMsg: "La banca ha alcanzado 10 victorias. ¡Has perdido!",
     rewardTitle: "🎉 ¡¡¡ENHORABUENA! HAS GANADO !!! 🎉",
     rewardSub: "La clave para el certitude es:",
     btnCopy: "📋 Copiar Clave",
@@ -327,7 +327,7 @@ var i18n = {
     tieMsg: "Tie. Point for the dealer.",
     dealerWinHandMsg: "Dealer wins the hand with ",
     matchWinMsg: "YOU WON THE MATCH!",
-    matchLoseMsg: "Dealer reached 1 win. You lost!",
+    matchLoseMsg: "Dealer reached 10 wins. You lost!",
     rewardTitle: "🎉 CONGRATULATIONS! YOU WON! 🎉",
     rewardSub: "The certitude key is:",
     btnCopy: "📋 Copy Key",
@@ -349,7 +349,7 @@ var i18n = {
     tieMsg: "Égalité. Point pour le croupier.",
     dealerWinHandMsg: "Le croupier gagne la main avec ",
     matchWinMsg: "VOUS AVEZ GAGNÉ LA PARTIE !",
-    matchLoseMsg: "Le croupier a 1 victoire. Vous avez perdu !",
+    matchLoseMsg: "Le croupier a 10 victoires. Vous avez perdu !",
     rewardTitle: "🎉 FÉLICITATIONS ! VOUS AVEZ GAGNÉ ! 🎉",
     rewardSub: "La clé pour le certitude est :",
     btnCopy: "📋 Copier la Clé",
@@ -371,7 +371,7 @@ var i18n = {
     tieMsg: "Empate. Ponto para a banca.",
     dealerWinHandMsg: "A banca venceu a mão com ",
     matchWinMsg: "VOCÊ VENCEU O JOGO!",
-    matchLoseMsg: "A banca atingiu 1 vitória. Você perdeu!",
+    matchLoseMsg: "A banca atingiu 10 vitórias. Você perdeu!",
     rewardTitle: "🎉 PARABÉNS! VOCÊ VENCEU! 🎉",
     rewardSub: "A chave para o certitude é:",
     btnCopy: "📋 Copiar Chave",
@@ -393,7 +393,7 @@ var i18n = {
     tieMsg: "Unentschieden. Punkt für die Bank.",
     dealerWinHandMsg: "Die Bank gewinnt die Hand mit ",
     matchWinMsg: "DU HAST GEWONNEN!",
-    matchLoseMsg: "Die Bank hat 1 Sieg erreicht. Verloren!",
+    matchLoseMsg: "Die Bank hat 10 Siege erreicht. Verloren!",
     rewardTitle: "🎉 HERZLICHEN GLÜCKWUNSCH! GEWONNEN! 🎉",
     rewardSub: "Der Schlüssel für Certitude ist:",
     btnCopy: "📋 Schlüssel Kopieren",
@@ -415,7 +415,7 @@ var i18n = {
     tieMsg: "Pareggio. Punto al banco.",
     dealerWinHandMsg: "Il banco vince la mano con ",
     matchWinMsg: "HAI VINTO LA PARTITA!",
-    matchLoseMsg: "Il banco ha raggiunto 1 vittoria. Hai perso!",
+    matchLoseMsg: "Il banco ha raggiunto 10 vittorie. Hai perso!",
     rewardTitle: "🎉 CONGRATULAZIONI! HAI VINTO! 🎉",
     rewardSub: "La chiave per il certitude è:",
     btnCopy: "📋 Copia Chiave",
